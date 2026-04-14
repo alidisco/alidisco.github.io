@@ -586,17 +586,35 @@
     /* ===== PROJECTS SECTION ===== */
     #projects {
       padding-top: 120px;
+      overflow: hidden;
     }
 
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
+    .projects-swiper {
+      width: 100%;
+      padding-bottom: 60px;
+      padding-top: 20px;
+    }
+    
+    .projects-swiper .swiper-slide {
+      height: 380px;
+    }
+
+    .projects-swiper .swiper-pagination-bullet {
+      background: var(--red);
+    }
+    .projects-swiper .swiper-pagination-bullet-active {
+      background: var(--neon-red);
+      box-shadow: 0 0 10px var(--neon-red);
+    }
+    
+    .projects-swiper .swiper-button-prev,
+    .projects-swiper .swiper-button-next {
+      color: var(--neon-red);
     }
 
     .card-container {
       perspective: 1000px;
-      height: 380px;
+      height: 100%;
     }
 
     .card {
@@ -1137,6 +1155,8 @@
       }
     }
   </style>
+  <!-- Swiper.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
 
 <body>
@@ -1302,10 +1322,12 @@
   <!-- ===== PROJECTS SECTION ===== -->
   <section id="projects">
     <h2 class="section-title" id="projects-title">PROJECTS</h2>
-    <div class="projects-grid">
+    
+    <div class="swiper projects-swiper">
+      <div class="swiper-wrapper">
 
       <!-- Card 1: Hotel du Lac -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1330,7 +1352,7 @@
       </div>
 
       <!-- Card 2: SwipeWise -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1352,7 +1374,7 @@
       </div>
 
       <!-- Card 3: HAS Computers -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1374,7 +1396,7 @@
       </div>
 
       <!-- Card 4: Resto Menu -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1396,7 +1418,7 @@
       </div>
 
       <!-- Card 5: ZooBot -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1418,7 +1440,7 @@
       </div>
 
       <!-- Card 6: Real Estate Website -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1441,7 +1463,7 @@
       </div>
 
       <!-- Card 7: Case Saab -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1463,7 +1485,7 @@
       </div>
 
       <!-- Card 8: Banking System -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1485,7 +1507,7 @@
       </div>
 
       <!-- Card 9: FPL AI Assistant -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1507,7 +1529,7 @@
       </div>
 
       <!-- Card 10: Streaming Services Store -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1529,7 +1551,7 @@
       </div>
 
       <!-- Card 11: POS Web System -->
-      <div class="card-container">
+      <div class="swiper-slide card-container">
         <div class="card">
           <div class="card-front">
             <div>
@@ -1551,6 +1573,11 @@
         </div>
       </div>
 
+      </div>
+      <!-- Add Pagination & Navigation -->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-pagination"></div>
     </div>
   </section>
 
@@ -2364,6 +2391,50 @@
       document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
     });
 
+  </script>
+
+  <!-- Swiper.js JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    /* ==========================================================
+       SWIPER JS INITIALIZATION
+       ========================================================== */
+    const swiper = new Swiper('.projects-swiper', {
+      effect: "coverflow",
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: "auto",
+      coverflowEffect: {
+        rotate: 30,
+        stretch: 0,
+        depth: 150,
+        modifier: 1,
+        slideShadows: false,
+      },
+      loop: true,
+      breakpoints: {
+        320: {
+          slidesPerView: 1,
+          spaceBetween: 20
+        },
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 30
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 40
+        }
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
   </script>
 </body>
 
