@@ -157,7 +157,6 @@
       opacity: .08
     }
 
-    /* THREE.JS CANVAS */
     #hero-canvas {
       position: fixed;
       top: 0;
@@ -166,6 +165,97 @@
       height: 100%;
       z-index: 1;
       pointer-events: none
+    }
+
+    /* === RESPONSIVE OVERHAUL === */
+    @media (max-width: 768px) {
+
+      /* Hide custom cursor on touch devices */
+      #custom-cursor,
+      .cursor-trail {
+        display: none !important;
+      }
+
+      body {
+        cursor: auto !important;
+      }
+
+      section {
+        padding: 60px 20px;
+      }
+
+      #hero h1 {
+        font-size: clamp(3rem, 15vw, 5rem);
+        letter-spacing: 4px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+        margin: 40px auto 0;
+      }
+
+      .hero-cta,
+      .download-cv {
+        width: 100%;
+        text-align: center;
+        padding: 14px 20px;
+        font-size: 1.1rem;
+      }
+
+      .about-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 30px;
+      }
+
+      .about-photo {
+        flex: 0 0 160px;
+        height: 160px;
+      }
+
+      .about-text {
+        width: 100%;
+      }
+
+      .about-text .education {
+        text-align: left;
+      }
+
+      .skill-node {
+        width: 80px;
+        height: 80px;
+        font-size: 0.65rem;
+      }
+
+      .projects-swiper .swiper-slide {
+        height: 420px;
+        /* Taller for mobile content */
+      }
+
+      .contact-content {
+        grid-template-columns: 1fr !important;
+        gap: 40px;
+      }
+
+      .web-layout {
+        display: none;
+        /* Hide complex web background on mobile */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .hero-socials a {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
     }
 
     /* SECTIONS */
@@ -1628,13 +1718,13 @@
       document.addEventListener('mousemove', e => { mouseX = (e.clientX / window.innerWidth - .5) * 2; mouseY = (e.clientY / window.innerHeight - .5) * 2 });
 
       // === CAMERA KEYFRAMES ===
-      // Each maps to a scroll position: hero→about→projects→experience→contact
+      const isMobile = window.innerWidth < 768;
       const cameraKeyframes = [
-        { z: 30, x: 0, y: 0, rx: 0, ry: 0 },           // Hero — centered, looking at spider
-        { z: -80, x: -6, y: 2, rx: 0.02, ry: 0.12 },    // About — push fwd, glance left
-        { z: -200, x: 8, y: -1, rx: -0.01, ry: -0.1 },  // Projects — sweep right
-        { z: -350, x: -4, y: 3, rx: 0.03, ry: 0.08 },   // Experience — drift left & up
-        { z: -500, x: 0, y: 8, rx: -0.08, ry: 0 },      // Contact — pull up, wide view
+        { z: 30, x: 0, y: 0, rx: 0, ry: 0 },
+        { z: -80, x: isMobile ? -2 : -6, y: 2, rx: 0.02, ry: isMobile ? 0.05 : 0.12 },
+        { z: -200, x: isMobile ? 3 : 8, y: -1, rx: -0.01, ry: isMobile ? -0.04 : -0.1 },
+        { z: -350, x: isMobile ? -2 : -4, y: 3, rx: 0.03, ry: isMobile ? 0.04 : 0.08 },
+        { z: -500, x: 0, y: 8, rx: -0.08, ry: 0 },
       ];
 
       // === PARTICLE FIELD (800 particles across entire depth) ===
@@ -1815,29 +1905,24 @@
         objGroup.add(label);
 
         let zPos = -30 - (i * (420 / skills.length));
-        let xPos = (Math.random() > 0.5 ? 1 : -1) * (35 + Math.random() * 15);
-        let yPos = (Math.random() - 0.5) * 50;
+        // Pull them closer in X/Y so they are always in view (Spread 15-28)
+        const spreadX = isMobile ? 12 : 20;
+        const spreadY = isMobile ? 20 : 35;
+        let xPos = (Math.random() > 0.5 ? 1 : -1) * (spreadX + Math.random() * 8);
+        let yPos = (Math.random() - 0.5) * spreadY;
 
-        if (skill === 'React') { xPos = 25; yPos = 5; zPos = -85; }
-        if (skill === 'HTML5/CSS3') { xPos = 32; yPos = 8; zPos = -80; objGroup.scale.set(0.8, 0.8, 0.8); }
+        if (skill === 'React') { xPos = isMobile ? 8 : 15; yPos = 5; zPos = -85; }
+        if (skill === 'HTML5/CSS3') { xPos = isMobile ? 12 : 20; yPos = 8; zPos = -80; objGroup.scale.set(isMobile ? 0.6 : 0.8, isMobile ? 0.6 : 0.8, isMobile ? 0.6 : 0.8); }
 
         objGroup.position.set(xPos, yPos, zPos);
         scene.add(objGroup);
       });
 
-      // === SPIDER EMBLEM ===
-      const spG = new THREE.Group(); scene.add(spG);
-      const bm = new THREE.MeshBasicMaterial({ color: 0xcc0000, wireframe: true, transparent: true, opacity: .6 });
-      spG.add(new THREE.Mesh(new THREE.SphereGeometry(.8, 8, 8), bm));
-      const ab = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8), bm.clone()); ab.position.y = -1.8; spG.add(ab);
-      const hd = new THREE.Mesh(new THREE.SphereGeometry(.5, 8, 8), bm.clone()); hd.position.y = 1.2; spG.add(hd);
-      const lm = new THREE.MeshBasicMaterial({ color: 0xcc0000, transparent: true, opacity: .5 });
-      function mkLeg(a, s, yo) { const g = new THREE.Group(); const u = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, 2.5, 4), lm); u.rotation.z = s * (.4 + a * .15); u.position.x = s * 1.2; u.position.y = yo; g.add(u); const l = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, 2, 4), lm); l.rotation.z = s * (.8 + a * .2); l.position.x = s * 2.8; l.position.y = yo - .8; g.add(l); return g }
-      for (let i = 0; i < 4; i++) { spG.add(mkLeg(i, 1, .5 - i * .5)); spG.add(mkLeg(i, -1, .5 - i * .5)) }
-      spG.scale.set(1.6, 1.6, 1.6);
 
-      // Fog for depth
-      scene.fog = new THREE.FogExp2(0x0a0a0a, .006);
+      // Spider removed at user request.
+
+      // Fog for depth (Reduced density so distant planets are visible)
+      scene.fog = new THREE.FogExp2(0x0a0a0a, .004);
 
       // === SCROLL STATE ===
       let scrollProgress = 0;
@@ -1930,17 +2015,23 @@
           }
         }
 
-        // Spider fades as camera moves away
-        spG.rotation.y += .006;
-        const sf = Math.max(0, 1 - Math.abs(camera.position.z) / 50);
-        spG.children.forEach(c => { if (c.material) c.material.opacity = .6 * sf; if (c.children) c.children.forEach(cc => { if (cc.material) cc.material.opacity = .5 * sf }) });
+        // Spider removed
 
         renderer.render(scene, camera);
       }
 
       if (!prefersReducedMotion) animate(); else renderer.render(scene, camera);
 
-      window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight) });
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // Instant responsive updates
+        const isNowMobile = window.innerWidth < 768;
+        cameraKeyframes[1].x = isNowMobile ? -2 : -6;
+        cameraKeyframes[2].x = isNowMobile ? 3 : 8;
+        cameraKeyframes[3].x = isNowMobile ? -2 : -4;
+      });
     })();
 
     /* ========== GSAP CONTENT ANIMATIONS ========== */
